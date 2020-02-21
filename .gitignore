@@ -1,0 +1,8 @@
+Debug/*
+.Debug/*
+*.codelite/*
+p2p.mk
+*.bin
+p2p.txt
+
+
