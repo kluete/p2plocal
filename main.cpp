@@ -247,7 +247,7 @@ void    UpdatePeerHeartbeat(void)
     
     const string    peer_name((const char*)&hex_name);
         
-    cout << "updating " << peer_name << " heartbeat" << endl;
+    // cout << "updating " << peer_name << " heartbeat" << endl;
     
     if (!m_PeerDirectory.count(peer_name))
     {
