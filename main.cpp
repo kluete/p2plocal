@@ -517,7 +517,7 @@ bool    ReadUnknownMessage(void)
                 return false;
             }
             
-            cout << m_PeerName << " received unknown message of " << rcv_sz << " bytes from " << ep.address() << endl;
+            // cout << m_PeerName << " received unknown message of " << rcv_sz << " bytes from " << ep.address() << endl;
             
             DispatchMessage();
             
@@ -729,7 +729,7 @@ void    DecodePeerDirectory(const uint8_t *raw_p)
         assert(!ec);
         assert(written_sz == msg_sz);
         
-        cout << m_PeerName << " wrote vanilla body of " << written_sz << " bytes " << endl;
+        // cout << m_PeerName << " wrote vanilla body of " << written_sz << " bytes " << endl;
         
         return true;
     }
