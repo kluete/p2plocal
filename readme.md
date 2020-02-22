@@ -27,13 +27,14 @@ Text messages are logged to stdout/console. There is no user input to speak of, 
 * error handling is rudimentary:
   * fatal-level: stdout message or assert()
   * application-level: stdout message or silent ignore
-* for simplicity's sake, peer names can only be a single (printable) character, so the practical per mesh peer size limit must be around 80 peers
+* for simplicity's sake, peer names can only be a single (printable) ASCII character, so the practical per mesh peer size limit must be around 80 peers
   * if names were lengthened, the limit would be the number of available host ports (somewhere under 65535 - 1024)
 * if a peer's address were increased to a full `<ip4:port>`, the limit would be much higher (under 2^24)
-* peer-to-peer message sizes are limited by the maximum IPv4 packet size: 65507 bytes, minus 2 bytes for the application-level protocol header
+* peer-to-peer message size is limited by the maximum IPv4 packet size: 65507 bytes, minus 2 bytes for the application-level protocol header
+* from wikipedia: "UDP has no garantee of delivery, ordering, or duplicate protection"
 * there's no other hardcoded application software limit
 
-Other than above-mentioned limitations, the system itself is fairly scalable:
+Other than above-mentioned limitations, the system itself is fairly scalable, although:
 * large vanilla message payloads would benefit from a pre-allocated memory buffer pool
 * network writes could be asynchronous but would need more complex source memory allocation
 * hashmap access isn't a real (terminal) bottleneck as their bucket size could be fine-tuned.
@@ -46,8 +47,6 @@ The code should be portable to any platform with an ISO-compliant C++14 compiler
 
 # Attack surface and remedies
 
-* from wikipedia: "UDP has no garantee of delivery, ordering, or duplicate protection"
-  * remedy would be application-level protocol enhancement
 * server/peer impersonation
   * remedy via peer authentication
   * possibly with public key cryptography to encrypt/sign all mesh packets
@@ -55,9 +54,12 @@ The code should be portable to any platform with an ISO-compliant C++14 compiler
   * depends on user-facing ISP policy ("your mileage may vary")
 * Denial Of Service
   * prevention should be upstream, at firewall-level
-* vanilla message forgery
-  * std::string is allocated in the heap, so _shouldn't_ trigger stack overflows. Still, remedy (hardening) should use `strnlen()` in addition to string zero-termination to double-validate an ASCII message length
-  * one should consider generic payload safety (vs ASCII-only)
+* vanilla message forgery and std::string stack overflows
+  * remedy (hardening) should use `strnlen()` in addition to string zero-termination to double-validate an ASCII message length
+* UTF-8 strings with multi-byte characters
+  * remedy: proper str.size over str.length() use
+
+In general, one should consider generic payload safety vs treating it as a string-only issue
 
 
 # Build instructions
@@ -76,12 +78,12 @@ The same executable is used to invoke server or peer.
 
 ## server
 ```
-p2p.bin
+./p2p.bin
 ```
 
 ## peer
 ```
-p2p.bin <name> <port>
+./p2p.bin <name> <port>
 ```
 
 - `name` must currently be a single (printable) character
@@ -116,6 +118,7 @@ terminal 4:
 
 terminal 3:
 ```
+# terminate peer B
 CTRL-C
 (...)
 # note directory update
@@ -136,7 +139,7 @@ CTRL-C
   * vanilla broadcast on/off
 * more timeouts, f.ex. for rejected peer
 * unit tests with timed disconnect/sequences
-* confirm number of threads spawn, that ASIO callbacks really are "stackles coroutines"
+* confirm number of threads spawn, i.e. that ASIO callbacks really are "stackles coroutines"
 * valgrind memory proofing
 * static analysis, e.g. with Synopsys Covertity Scan
 * protocol fuzzing (random data UDP messages)
@@ -146,6 +149,6 @@ CTRL-C
 
 # Famous last words
 
-Enjoy, hope it's useful but still, "caveat emptor" (_so there_).
+Enjoy, hope it's useful but, still, "caveat emptor" (_so there_).
 
 
