@@ -16,7 +16,7 @@ Text messages are logged to stdout/console. There is no user input to speak of, 
 * the server periodically checks each peer's last heartbeat time stamp, removes any dead ones, and, upon change, updates its master peer directory, which it then re-broadcasts to the mesh's remaining (connected) peers
 * each peer broadcasts periodic ASCII _vanilla_ messages to all known (hence alive) peers in the mesh. That vanilla message payload format is "<_source_peer_name_>\_broadcast\_<_counter_>" (the counter is incremented after every sent batch)
 * a peer can only send vanilla messages to other known, live peers within its mesh (hence fulfilling the test assignment)
-* the server is idle I/O-wise while no peers are added or removed
+* apart from receiving heartbeats, the server is idle I/O-wise while no peers are added or removed
 
 
 # Limitations, scalability and bottlenecks
