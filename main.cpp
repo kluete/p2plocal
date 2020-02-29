@@ -40,8 +40,6 @@ enum MSG_T : uint16_t
     S2P_PEER_DIRECTORY,
     P2P_VANILLA_MESSAGE,
     P2S_KEEP_ALIVE,
-    X2P_QUIT_PEER,
-    P2S_PEER_LEFT
 };
 
 // PODs
@@ -546,12 +544,6 @@ void    DispatchMessage(void)
                 ReadVanillaMessage(m_BodyPtr);
         }       break;
         
-        case MSG_T::X2P_QUIT_PEER:
-        {
-                cout << m_PeerName << " got X2P_QUIT_PEER msg" << endl;
-                return;
-        }       break;
-     
         default:
         {
                 cout << "illegal message header id 0x" << hex << (int) (*m_HeaderIDPtr) << endl;
