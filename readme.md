@@ -1,6 +1,6 @@
 # About
 
-This is a minimal peer-to-peer mesh simulator running on localhost> It's a prototype, not a finished product. The single `main.cpp` source file is written in ISO C++14 and uses the header-only, _non-Boost_ version of the [ASIO framework](http://www.think-async.com).
+This is a minimal peer-to-peer mesh simulator running on localhost. It's a prototype, not a finished product. The single `main.cpp` source file is written in ISO C++14 and uses the header-only, _non-Boost_ version of the [ASIO framework](http://www.think-async.com).
 
 This project uses UDP network communication: reading is asynchronous while writing is synchronous. The application-level protocol is strictly binary.
 
