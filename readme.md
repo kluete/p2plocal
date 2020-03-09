@@ -128,6 +128,16 @@ CTRL-C
 # note directory update, resumption of cross-messaging
 ```
 
+# Docker run
+
+```
+docker pull debian
+```
+
+# launch
+docker run -it debian bash
+
+
 
 # Suggested enhancements
 
