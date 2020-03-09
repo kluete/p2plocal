@@ -768,9 +768,9 @@ void    RunServer(asio::io_context &io_context)
 
 //---- Run Peer ----------------------------------------------------------------
 
-void RunPeer(asio::io_context &io_context, const string peer_name, const uint16_t port)
+void RunPeer(asio::io_context &io_context, const string &serverhost, const uint16_t serverport, const string peer_name)
 {
-    peer    peer_n(io_context, peer_name, port);
+    peer    peer_n(io_context, peer_name, serverport);
     
     peer_n.start();
     
@@ -840,11 +840,11 @@ int main(int argc, char **argv)
                                
                 cout << "regex ok" << endl;
                 
-                const string    host_s = matches[1];
-                const string    port_s = matches[2];
+                const string    serverhost_s = matches[1];
+                const string    serverport_s = matches[2];
                 
-                cout << "host = \"" << host_s << "\"" << endl;
-                cout << "port = " << port_s << endl;
+                cout << "host = \"" << serverhost_s << "\"" << endl;
+                cout << "port = " << serverport_s << endl;
                 
                 // sanity checks
                 if (peer_name.size() != 1)
@@ -860,7 +860,7 @@ int main(int argc, char **argv)
                     return -1;
                 }
                 
-                const int   port = stoi(port_s);       // (throwns on failure)
+                const int   port = stoi(serverport_s);       // (throwns on failure)
                 /*
                 if (port == SERVER_PORT)
                 {
@@ -876,7 +876,7 @@ int main(int argc, char **argv)
                     return -1;
                 }
                 
-                RunPeer(io_context, peer_name, port);
+                RunPeer(io_context, serverhost_s, port, peer_name);
             }   break;
 
             default:

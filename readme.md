@@ -147,6 +147,7 @@ CTRL-P-Q
 
 # Suggested enhancements
 
+* peer port should be automatically deduced from Dokcet container connection
 * multi-host protocol, i.e. replace `127.0.0.1:port` with `ip:port`
 * longer peer name or replace it altogether with peer's `ip:port`
 * templated function for binary stream de/serialization
