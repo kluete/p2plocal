@@ -785,7 +785,7 @@ using namespace strimrut;
 
 int main(int argc, char **argv)
 {
-	cout << "strimrut test has " << argc << " args" << endl;
+	cout << "p2p mesh sim has #" << argc << " args" << endl;
     
     asio::io_context    io_context;
     
