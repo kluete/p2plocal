@@ -15,6 +15,7 @@
 #include <thread>
 #include <chrono>
 #include <sstream>
+#include <regex>
 
 #include "asio.hpp"
 
@@ -816,30 +817,58 @@ int main(int argc, char **argv)
                 
             case 3:
             {   // peer
-                cout << "requesting peer with name \"" << argv[1] << "\", port " << argv[2] << endl;
+                const string    server_fullhost = argv[1];
+                const string    peer_name = argv[2];
+                
+                cout << "requesting peer with server host " << server_fullhost << " and peer name \"" << peer_name << "\"" << endl;
+                
+                static const regex	SPLIT_HOST_PORT_RE{"^([0-9\\.]+)\\:([0-9]+)$", regex::ECMAScript | regex::optimize};
+                
+                smatch	matches;
+	
+                if (!regex_match(server_fullhost, matches/*&*/, SPLIT_HOST_PORT_RE))
+                {
+                    cout << "regex_match not found, aborting..." << endl;
+                    return -1;
+                }
+                
+                if (3 != matches.size())
+                {
+                    cout << "regex_match # captures mismatch, aborting..." << endl;
+                    return -1;
+                }
+                               
+                cout << "regex ok" << endl;
+                
+                const string    host_s = matches[1];
+                const string    port_s = matches[2];
+                
+                cout << "host = \"" << host_s << "\"" << endl;
+                cout << "port = " << port_s << endl;
                 
                 // sanity checks
-                const string    name(argv[1]);
-                if (name.size() != 1)
+                if (peer_name.size() != 1)
                 {
                     cout << "illegal name length, expects 1 char" << endl;
                     cout << "aborting..." << endl;
                     return -1;
                 }
-                if (!isprint(name[0]))
+                if (!isprint(peer_name[0]))
                 {
                     cout << "illegal unprintable name" << endl;
                     cout << "aborting..." << endl;
                     return -1;
                 }
                 
-                const int   port = stoi(argv[2]);       // (throwns on failure)
+                const int   port = stoi(port_s);       // (throwns on failure)
+                /*
                 if (port == SERVER_PORT)
                 {
                     cout << "illegal port, is reserved for server" << endl;
                     cout << "aborting..." << endl;
                     return -1;
                 }
+                */
                 if (port > numeric_limits<int16_t>::max())
                 {
                     cout << "illegal port, overflow" << endl;
@@ -847,7 +876,7 @@ int main(int argc, char **argv)
                     return -1;
                 }
                 
-                RunPeer(io_context, name, port);
+                RunPeer(io_context, peer_name, port);
             }   break;
 
             default:
@@ -855,7 +884,7 @@ int main(int argc, char **argv)
                 // illegal nargs
                 cout << "illegal number of arguments:" << endl;
                 cout << "  server expects no arguments" << endl;
-                cout << "  peer expects <name> <port> arguments" << endl;
+                cout << "  peer expects <host:port>  <name> arguments" << endl;
                 cout << "aborting..." << endl;
                 return -1;
             }   break;
