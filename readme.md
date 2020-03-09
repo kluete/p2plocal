@@ -130,12 +130,18 @@ CTRL-C
 
 # Docker run
 
+## Install Docker image
 ```
 docker pull debian
 ```
 
-# launch
-docker run -it debian bash
+## Launch
+```
+docker run -it -v $(pwd)/:/p2p -u $(id -u):$(id -g) debian bash -c ./p2p/p2p.bin "$@"
+(...)
+# kill docker instance
+CTRL-P-Q
+```
 
 
 
