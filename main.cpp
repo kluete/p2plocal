@@ -130,7 +130,7 @@ private:
 
 //---- Read Unknown Message ----------------------------------------------------
 
-    bool    ReadUnknownMessage(void)
+    void    ReadUnknownMessage(void)
     {
         m_ServerSocket.async_wait(asio::ip::udp::socket::wait_read,
             [&](asio::error_code ec)
@@ -155,19 +155,18 @@ private:
                 
                 const size_t	rcv_sz = m_ServerSocket.receive_from(asio::buffer(muta_buf), ep/*&*/, flags, ec/*&*/);
                 if (ec || (rcv_sz != avail_sz))
-                {	cout << "server error receiving unknown message: " << ec.message() << endl;
+                {	cout << "server error: receiving unknown message of " << rcv_sz << " bytes (ASIO error = \"" << ec.message() << "\")" << endl;
+                }
+                else
+                {
+                    // cout << "server received unknown message of " << rcv_sz << " bytes from " << ep.address() << endl;
                 
-                    return false;
+                    DispatchMessage();
                 }
                 
-                // cout << "server received unknown message of " << rcv_sz << " bytes from " << ep.address() << endl;
-                
-                DispatchMessage();
-                
-                return true;
+                // restart wait for next read
+                ReadUnknownMessage();
         });
-        
-        return true;
     }
     
 //---- Dispatch Message --------------------------------------------------------
@@ -194,8 +193,7 @@ void    DispatchMessage(void)
         }   break;
     }
     
-    // restart wait for next read
-    ReadUnknownMessage();
+    
 }
 
 //---- Decode Birth Body -------------------------------------------------------
@@ -485,7 +483,7 @@ void    AnnounceOwnBirth(const string &pure_name)
 
 //---- Read Unknown Message ----------------------------------------------------
 
-bool    ReadUnknownMessage(void)
+void    ReadUnknownMessage(void)
 {
     // wait for socket to have something to read
     m_OwnSocket.async_wait(asio::ip::udp::socket::wait_read,
@@ -510,19 +508,18 @@ bool    ReadUnknownMessage(void)
             
             const size_t	rcv_sz = m_OwnSocket.receive_from(asio::buffer(muta_buf), ep/*&*/, flags, ec/*&*/);
             if (ec || (rcv_sz != avail_sz))
-            {	cout << m_PeerName << " error receiving unknown message: " << ec.message() << endl;
+            {	cout << m_PeerName << " error receiving message of " << dec << rcv_sz << "bytes (ASIO error \"" << ec.message() << "\")" << endl;
+            }
+            else
+            {
+                // cout << m_PeerName << " received unknown message of " << rcv_sz << " bytes from " << ep.address() << endl;
             
-                return false;
+                DispatchMessage();
             }
             
-            // cout << m_PeerName << " received unknown message of " << rcv_sz << " bytes from " << ep.address() << endl;
-            
-            DispatchMessage();
-            
-            return true;
+            // reloop to wait for next message
+            ReadUnknownMessage();
         });
-    
-    return true;
 }
 
 //---- Dispatch Message --------------------------------------------------------
@@ -549,9 +546,6 @@ void    DispatchMessage(void)
                 cout << "illegal message header id 0x" << hex << (int) (*m_HeaderIDPtr) << endl;
         }       break;
     }
-    
-    // reloop to wait for next message
-    ReadUnknownMessage();
 }
 
 //---- Restart Heartbeat -------------------------------------------------------
