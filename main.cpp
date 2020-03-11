@@ -154,8 +154,8 @@ private:
                 udp::endpoint		                    ep;
                 
                 const size_t	rcv_sz = m_ServerSocket.receive_from(asio::buffer(muta_buf), ep/*&*/, flags, ec/*&*/);
-                if (ec || (rcv_sz < avail_sz))
-                {	cout << "server error: receiving underflowed message size (" << rcv_sz << " vs " << avail_sz << " bytes), ASIO error = \"" << ec.message() << endl;
+                if (ec || (rcv_sz > avail_sz))
+                {	cout << "server error: receiving underflowed message size (" << rcv_sz << " vs " << avail_sz << " bytes), ASIO error = \"" << ec.message() << "\"" << endl;
                 }
                 else
                 {
@@ -192,8 +192,6 @@ void    DispatchMessage(void)
             cout << "error in server msg switch" << endl;
         }   break;
     }
-    
-    
 }
 
 //---- Decode Birth Body -------------------------------------------------------
