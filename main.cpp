@@ -505,8 +505,8 @@ void    ReadUnknownMessage(void)
             udp::endpoint		                    ep;
             
             const size_t	rcv_sz = m_OwnSocket.receive_from(asio::buffer(muta_buf), ep/*&*/, flags, ec/*&*/);
-            if (ec || (rcv_sz != avail_sz))
-            {	cout << m_PeerName << " error receiving message of " << dec << rcv_sz << "bytes (ASIO error \"" << ec.message() << "\")" << endl;
+            if (ec || (rcv_sz > avail_sz))
+            {	cout << m_PeerName << " error receiving message of " << dec << rcv_sz << " bytes (ASIO error \"" << ec.message() << "\")" << endl;
             }
             else
             {
