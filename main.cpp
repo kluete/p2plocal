@@ -155,7 +155,7 @@ private:
                 
                 const size_t	rcv_sz = m_ServerSocket.receive_from(asio::buffer(muta_buf), ep/*&*/, flags, ec/*&*/);
                 if (ec || (rcv_sz != avail_sz))
-                {	cout << "server error: receiving unknown message of " << rcv_sz << " bytes (ASIO error = \"" << ec.message() << "\")" << endl;
+                {	cout << "server error: receiving bad message size (" << rcv_sz << " vs " << avail_sz << " bytes), ASIO error = \"" << ec.message() << endl;
                 }
                 else
                 {
